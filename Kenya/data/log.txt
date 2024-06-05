@@ -1,0 +1,37 @@
+2024-06-05 19:48:11.345253: Project initiated
+2024-06-05 20:14:06.080761: Boundaries downloaded from geoboundaries (ADMIN-1; gbOpen) - Input folder 20240605201406
+2024-06-05 20:29:11.906179: Projection parameter set (32737)
+2024-06-05 20:29:11.942658: vBorders shapefile projected (EPSG:32737) - From input folder: 20240605201406
+2024-06-05 20:29:27.948141: Processed vBorders shapefile saved - Output folder: 20240605202911
+2024-06-05 20:33:29.383486: Population raster downloaded from ftp://ftp.worldpop.org.uk/GIS/Population/Global_2021_2022_1km_UNadj/constrained/2022/KEN/ken_ppp_2022_1km_UNadj_constrained.tif - Input folder 20240605203320
+2024-06-05 20:39:40.758209: Multiple landcover tiles downloaded and mosaicked - Input folder 20240605203339
+2024-06-05 21:30:40.447272: vBorders shapefile projected (EPSG:32737) - From input folder: 20240605201406
+2024-06-05 21:30:48.356615: Processed vBorders shapefile saved - Output folder: 20240605213040
+2024-06-05 21:30:48.970238: Population raster cropped, masked and projected (EPSG:32737) using the 'bilinear' method - From input folder: 20240605203320
+2024-06-05 21:30:52.792242: Population raster resampled using the 'bilinear' method - From input folder: 20240605203320
+2024-06-05 21:31:35.039976: Population raster corrected using a grid of 3000 x 3000 m cells
+2024-06-05 21:31:47.047413: Mean difference per grid cell before correction: 41150.07 - Output folder: 20240605213124
+2024-06-05 21:31:47.047885: Mean difference per grid cell after correction: -0.1 - Output folder: 20240605213124
+2024-06-05 21:31:47.048266: Processed population raster saved - Output folder: 20240605213124
+2024-06-05 21:32:05.911399: rLandcover raster cropped, masked and projected using the 'near' method - From input folder: 20240605203339
+2024-06-05 21:32:08.133384: rLandcover raster resampled using the 'near' method - From input folder: 20240605203339
+2024-06-05 21:32:15.481083: Processed rLandcover_landcover raster saved - Output folder: 20240605213208
+2024-06-05 21:33:17.419331: vBorders shapefile projected (EPSG:32737) - From input folder: 20240605201406
+2024-06-05 21:33:22.055622: Processed vBorders shapefile saved - Output folder: 20240605213317
+2024-06-05 21:33:22.524268: Population raster cropped, masked and projected (EPSG:32737) using the 'bilinear' method - From input folder: 20240605203320
+2024-06-05 21:33:26.346035: Population raster resampled using the 'bilinear' method - From input folder: 20240605203320
+2024-06-05 21:34:17.155665: Population raster corrected using a grid of 3000 x 3000 m cells
+2024-06-05 21:34:29.487719: Mean difference per grid cell before correction: 41150.07 - Output folder: 20240605213356
+2024-06-05 21:34:29.48821: Mean difference per grid cell after correction: -0.1 - Output folder: 20240605213356
+2024-06-05 21:34:29.48858: Processed population raster saved - Output folder: 20240605213356
+2024-06-05 21:34:47.964913: rLandcover raster cropped, masked and projected using the 'near' method - From input folder: 20240605203339
+2024-06-05 21:34:50.143324: rLandcover raster resampled using the 'near' method - From input folder: 20240605203339
+2024-06-05 21:35:25.130178: Processed rLandcover_landcover raster saved - Output folder: 20240605213450
+2024-06-05 21:35:25.301677: vFacilities shapefile projected and clipped - From input folder: 20240605203039
+2024-06-05 21:35:53.707759: Processed vFacilities_facilities.shp shapefile saved - Output folder: 20240605213525
+2024-06-05 21:35:54.207121: vNaturalPolygons shapefile projected and clipped - From input folder: 20240326193051
+2024-06-05 21:36:02.077929: Processed vNaturalPolygons_naturalpolygons.shp shapefile saved - Output folder: 20240605213554
+2024-06-05 21:36:12.565924: vRoads shapefile projected and clipped - From input folder: 20240326140236
+2024-06-05 21:36:25.47216: Processed vRoads_roads.shp shapefile saved - Output folder: 20240605213612
+2024-06-05 21:36:26.076305: vWaterLines shapefile projected and clipped - From input folder: 20240326154204
+2024-06-05 21:36:37.313433: Processed vWaterLines_waterlines.shp shapefile saved - Output folder: 20240605213626
