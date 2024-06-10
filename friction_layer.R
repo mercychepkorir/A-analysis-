@@ -21,8 +21,7 @@ pacman::p_load(dplyr,
                fasterize)
 
 # admin boundary ---------------------------------------------------------------
-admin <- st_read("gadm41_KEN_0.shp") |> 
-  st_transform(crs = 32737)
+admin <- st_read("gadm41_KEN_0.shp") 
 projections <- read.csv("projections.csv")
 epsg <- make_EPSG() # fetch projection data from EPSG
 projections <- left_join(projections, epsg, by = c("epsg_code"="code"))
@@ -30,20 +29,21 @@ admin <- left_join(admin, projections, by = c("GID_0" = "country_code"))
 countries <- admin$GID_0
 
 # roads ---------------------------------------------------------------
-landcov <- rast("Kenya/data/rLandcover/20240605203339/processed/20240605213450/rLandcover_landcover.tif")
-  
+landcov <- rast("Kenya/data/rLandcover/20240605203339/processed/20240605213450/rLandcover_landcover.tif") 
+landcov_ <- terra::project(landcov, crs(admin)) # changing to 4326
+
 # resample landcover to 1km resolution
-grid_landcov <- rast(ext(landcov))
-res(grid_landcov) <-  1000
+grid_landcov <- rast(ext(landcov_))
+res(grid_landcov) <-  0.0083333
 crs(grid_landcov) <- crs(landcov)
-landcover_resamp  <- terra::resample(landcov, grid_landcov, "near")
+landcover_resamp  <- terra::resample(landcov_, grid_landcov, "near")
 
 #save
 writeRaster(landcover_resamp, "Kenya/data/rLandcover/20240605203339/processed/20240605213450/rLandcover_resamp.tif", overwrite = TRUE)
 
 roads_new <-  st_read("Kenya/data/vRoads/20240326140236/processed/20240605213612/vRoads_roads.shp")
 roads_new <- roads_new |> 
-  st_transform(crs(landcov)) 
+  st_transform(crs(landcov_)) 
 roads_new <- roads_new %>% 
   as(., "Spatial")
 roads_new <- roads_new %>% 
@@ -61,7 +61,7 @@ writeRaster(roads_rast, "Kenya/data/vRoads/20240326140236/processed/vRoads_raste
 water_lines_new <- st_read("Kenya/data/vWaterLines/20240326154204/processed/20240605213626/vWaterLines_waterlines.shp") |> 
   mutate(class = 1) 
 water_lines_new <- water_lines_new |> 
-  st_transform(crs(landcov))
+  st_transform(crs(landcov_))
 water_lines_new <- water_lines_new %>% 
   as(., "Spatial") 
 water_lines_new <- water_lines_new %>% 
@@ -80,7 +80,7 @@ writeRaster(water_lines_rast, "Kenya/data/vWaterLines/20240326154204/processed/v
 water_poly_new <- st_read("Kenya/data/vNaturalPolygons/20240326193051/processed/20240605213554/vNaturalPolygons_naturalpolygons.shp") |> 
   mutate(class = 1)
 water_poly_new <- water_poly_new |> 
-  st_transform(crs(landcov)) 
+  st_transform(crs(landcov_)) 
 water_poly_new <- water_poly_new %>%
   as(., "Spatial") 
 water_poly_new <- water_poly_new %>% 

@@ -24,12 +24,12 @@ pacman::p_load(dplyr,
                exactextractr)
 # load data----
 #admin shapefiles
-adm0 <- st_read("gadm41_KEN_0.shp") |> 
-  st_transform(crs = 32737)
-adm1 <- st_read("Kenya/data/vBorders/20240605201406/processed/20240605213317/vBorders_borders.shp")
+adm0 <- st_read("gadm41_KEN_0.shp")
+adm1 <- st_read("Kenya/data/vBorders/20240605201406/processed/20240605213317/vBorders_borders.shp") |> 
+  st_transform(crs(adm0))
 
-#population
-pop <- raster("Kenya/data/rPopulation/20240605203320/processed/20240605213356/rPopulation_population.tif")
+#population of women of reproductive health
+pop <- raster("KEN_population_v1_0_agesex_f15_49.tif")
 
 #transition matrix
 T.GC <- readRDS('TGC1.rds')
@@ -43,15 +43,22 @@ bms <- st_read("basic_maternity_services.shp")
 # travel time calculation-----
 # rasterise the facilities
 ## Point locations
-bms_new <- bms |>
-  st_transform(crs = st_crs(adm1)) |> 
-  dplyr::select(facility, county, readiness,keph_level) 
+bms_new <- as.data.frame(bms) |>
+  dplyr::select(longitude, latitude, facility, county, readiness,keph_level) 
 
-# convert point location to matrix
-overlap1 <- st_intersection(bms_new, adm1)
-points_bms <- st_coordinates(overlap1)
+names(bms_new) <- c("X_COORD", "Y_COORD", "facility", "county", "readiness","keph_level")
 
-# calculate travel time using matrix and transition matrix 
+# Keep only point coordinates within the shapefile bounds
+coordinates(bms_new) <- ~ X_COORD + Y_COORD 
+
+# convert to sp from sf
+crs(bms_new) <- crs(adm1)
+adm1.sp <- as_Spatial(adm1)
+overlap <- over(bms_new, adm1.sp)
+# bms_new <- bms_new[!is.na(overlap$GID_0),]
+points_bms <- as.matrix(bms_new@coords)
+
+# travel time raster
 bms_raster <- gdistance::accCost(T.GC, points_bms)
 plot(bms_raster)
 
@@ -128,7 +135,7 @@ pop_pct_by_bms_at_adm0 <- pop_pct_by_bms_at_adm0[, c("country", "transport", "se
 # at adm1 level
 pop_pct_by_bms_n_adm1 <- as.data.frame(bms_raster_cat_poly_diss.adm1[, c("bms_raster", "shapeName", "pop")]) |> 
   dplyr::group_by(shapeName) |> 
-  mutate(total_pop = round(sum(pop), digits = 0)) |> 
+  mutate(adm1_pop = round(sum(pop), digits = 0)) |> 
   ungroup() |> 
   mutate(travel_minutes = case_when(
     bms_raster == 1 ~ "≤30",
@@ -137,10 +144,10 @@ pop_pct_by_bms_n_adm1 <- as.data.frame(bms_raster_cat_poly_diss.adm1[, c("bms_ra
     bms_raster == 4 ~ "91-120",
     bms_raster == 5 ~ ">120")) |> 
   mutate(pop_1hr = round(pop, digits = 0),
-         pop_pct_1hr = round((pop / total_pop * 100), digits = 1)) |> 
-  group_by(shapeName) |> 
+         pop_pct_1hr = round((pop / adm1_pop * 100), digits = 1)) |> 
+  group_by(shapeID) |> 
   mutate(pop_2hr = round(sum(pop), digits = 0),
-         pop_pct_2hr = round((pop_2hr / total_pop * 100), digits = 1),
+         pop_pct_2hr = round((pop_2hr / adm1_pop * 100), digits = 1),
          rid = row_number(shapeName),
          le_1hour = paste0(pop_1hr, " (", (paste0(sprintf("%1.1f", pop_pct_1hr))),"%)"),
          le_2hour = paste0(pop_2hr, " (", (paste0(sprintf("%1.1f", pop_pct_2hr))),"%)"),
@@ -207,3 +214,6 @@ basic_county <- basic_county |>
     TRUE ~ as.character(cum_pct)
   )) |> 
   mutate(pct_pop_range = as.factor(pct_pop_range)) 
+
+
+# plots----
