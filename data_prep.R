@@ -95,7 +95,7 @@ process_inputs(mainPath,
                popCorrection = TRUE, 
                gridRes = 3000)
 
-#Label land cover classes (processed landcover required)
+#Label land cover classes (processed land cover required)
 label_landcover(mainPath, 
                 country, 
                 mostRecent = TRUE, 
